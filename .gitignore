@@ -1,0 +1,9 @@
+node_modules/
+
+config/local.yml
+
+.glitch*
+
+.data/private-*
+
+.vscode/*
