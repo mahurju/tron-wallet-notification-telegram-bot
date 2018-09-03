@@ -1,0 +1,8 @@
+telegram:
+  myChatId: 237293953
+  
+tron:
+  trxTarget: TFmQQH14pMZhitALbKEZBDitKaMW3KX68B
+
+firebase:
+  databaseURL: 'https://marucool-f2bb1.firebaseio.com'
