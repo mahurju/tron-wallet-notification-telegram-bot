@@ -21,8 +21,8 @@ exports.showBal = async (reply, address) => {
   const { amount = 0, expires } = frozenBalances[0] || {};
   if (amount > 0) {
     msg += '<b>* Frozen Balance</b>\n';
-    msg += `Amount: ${numberformat(amount / 1000000)}\n`;
-    msg += `Expires: ${moment(expires).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss')} (+09:00)\n\n`;
+    msg += `- Amount: ${numberformat(amount / 1000000)}\n`;
+    msg += `- Expires: ${moment(expires).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss')} (+09:00)\n\n`;
   }
   for (const token of balances) {
     const { name, balance } = token;
@@ -94,8 +94,8 @@ const showBalance = async (chatId) => {
 
         if (amount > 0) {
           msg += '\n\n<b>* Frozen Balance</b>\n';
-          msg += `Amount: ${numberformat(amount / 1000000)}\n`;
-          msg += `Expires: ${moment(expires).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss')} (+09:00)\n`;
+          msg += `- Amount: ${numberformat(amount / 1000000)}\n`;
+          msg += `- Expires: ${moment(expires).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss')} (+09:00)\n`;
         }
 
         bot.telegram.sendMessage(chatId, msg, { parse_mode: 'HTML' });

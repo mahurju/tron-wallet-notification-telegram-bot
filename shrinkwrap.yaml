@@ -11,6 +11,7 @@ dependencies:
   json-stable-stringify: 1.0.1
   jsonfile: 4.0.0
   moment: 2.22.2
+  moment-timezone: 0.5.21
   nconf: 0.10.0
   nconf-yaml: 1.0.2
   node-schedule: 1.3.0
@@ -5018,7 +5019,7 @@ packages:
     resolution:
       integrity: sha1-AwiOnr+edWtpdRYR0qXvWRSCyZU=
 registry: 'https://registry.npmjs.org/'
-shrinkwrapMinorVersion: 8
+shrinkwrapMinorVersion: 9
 shrinkwrapVersion: 3
 specifiers:
   '@tronscan/client': ^0.2.12
@@ -5033,6 +5034,7 @@ specifiers:
   json-stable-stringify: ^1.0.1
   jsonfile: ^4.0.0
   moment: ^2.22.2
+  moment-timezone: ^0.5.21
   nconf: ^0.10.0
   nconf-yaml: ^1.0.2
   node-schedule: ^1.3.0
