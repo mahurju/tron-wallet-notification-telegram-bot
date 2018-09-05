@@ -2,9 +2,11 @@ const { Client } = require('@tronscan/client');
 const chalk = require('chalk');
 const schedule = require('node-schedule');
 const stringify = require('json-stable-stringify');
+const moment = require('moment-timezone');
 const users = require('../../db')();
 const { numberformat } = require('../utils');
 const { checkAddressPattern } = require('./helpers');
+
  
 let bot = null;
 const jobs = {};
@@ -15,6 +17,13 @@ exports.showBal = async (reply, address) => {
   let msg = `<b>${address}</b>\n\n`;
   const accountInfo = await client.getAddress(address);
   const balances = accountInfo.balances || [];
+  const frozenBalances = (accountInfo.frozen && accountInfo.frozen.balances) || [];
+  const { amount = 0, expires } = frozenBalances[0] || {};
+  if (amount > 0) {
+    msg += '<b>* Frozen Balance</b>\n';
+    msg += `- Amount: ${numberformat(amount / 1000000)}\n`;
+    msg += `- Expires: ${moment(expires).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss')} (+09:00)\n\n`;
+  }
   for (const token of balances) {
     const { name, balance } = token;
     const bal = Math.floor(balance);
@@ -45,6 +54,10 @@ const showBalance = async (chatId) => {
     try {
       const accountInfo = await client.getAddress(addr);
       const balances = accountInfo.balances || [];
+
+      const frozenBalances = (accountInfo.frozen && accountInfo.frozen.balances) || [];
+      const { amount = 0, expires } = frozenBalances[0] || {};
+
       const changed = [];
       const allTokens = [];
       balances.forEach((token) => {
@@ -77,6 +90,12 @@ const showBalance = async (chatId) => {
         if (allTokens.length > 0) {
           msg += '<b>* Current Balance</b>\n';
           msg += allTokens.join('\n');
+        }
+
+        if (amount > 0) {
+          msg += '\n\n<b>* Frozen Balance</b>\n';
+          msg += `- Amount: ${numberformat(amount / 1000000)}\n`;
+          msg += `- Expires: ${moment(expires).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss')} (+09:00)\n`;
         }
 
         bot.telegram.sendMessage(chatId, msg, { parse_mode: 'HTML' });
