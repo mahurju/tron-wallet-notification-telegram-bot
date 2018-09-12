@@ -66,7 +66,7 @@ const showBalance = async (chatId) => {
         const preBal = preTokens[name] || 0;
         if (bal !== preBal && Object.keys(preTokens).length > 0) {
           const diff = parseInt(bal - preBal, 10);
-          changed.push(`<b> - ${name}:  ${numberformat(preBal)} -> ${numberformat(bal)} (${diff > 0 ? `+${diff}` : diff})</b>`);
+          changed.push(`<b> - ${name}:  ${numberformat(preBal)} -> ${numberformat(bal)} (${diff > 0 ? `+${numberformat(diff)}` : numberformat(diff)})</b>`);
         }
 
         if (bal > 0) {
