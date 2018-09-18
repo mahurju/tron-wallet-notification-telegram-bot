@@ -1,5 +1,6 @@
-const { Client } = require('@tronscan/client');
 const chalk = require('chalk');
+const axios = require('axios');
+const nconf = require('nconf');
 const schedule = require('node-schedule');
 const stringify = require('json-stable-stringify');
 const moment = require('moment-timezone');
@@ -10,14 +11,15 @@ const { checkAddressPattern } = require('./helpers');
  
 let bot = null;
 const jobs = {};
+const tronApi = nconf.get('tron:api');
 
 exports.showBal = async (reply, address) => {
   console.log('===========================================================');
-  const client = new Client();
   let msg = `<b>${address}</b>\n\n`;
-  const accountInfo = await client.getAddress(address);
-  const balances = accountInfo.balances || [];
-  const frozenBalances = (accountInfo.frozen && accountInfo.frozen.balances) || [];
+  // const accountInfo = await client.getAddress(address);
+  const accountInfo = await axios.get(`${tronApi}/api/account/${address}`);
+  const balances = (accountInfo.data && accountInfo.data.balances) || [];
+  const frozenBalances = (accountInfo.data && accountInfo.data.frozen && accountInfo.data.frozen.balances) || [];
   const { amount = 0, expires } = frozenBalances[0] || {};
   if (amount > 0) {
     msg += '<b>* Frozen Balance</b>\n';
@@ -37,25 +39,23 @@ exports.showBal = async (reply, address) => {
 
 
 const showBalance = async (chatId) => {
-  console.log('===========================================================');
   const result = await users.child(`/tron/${chatId}/address`).once('value');
-  console.log(result.val());
   const myAddress = result.val();
   if (!myAddress) return bot.telegram.sendMessage(chatId, 'Not found tron addresses.');
 
-  const client = new Client();
   await Promise.all(Object.keys(myAddress).map(async (addr) => {
-  // for (const addr of Object.keys(myAddress)) {
+    console.log(addr);
     const preTokens = (myAddress[addr] && myAddress[addr].tokens) || {};
-    // let msg = `<b>[Balance Notification - ${Object.keys(preTokens).length > 0 ? 'Updated' : 'Registration'}]</b>\n`;
     let msg = '<b>[Balance Notification]</b>\n';
     msg += `<b>${addr}</b>\n\n`;
     const currentTokens = {};
     try {
-      const accountInfo = await client.getAddress(addr);
-      const balances = accountInfo.balances || [];
+      const accountInfo = await axios.get(`${tronApi}/api/account/${addr}`);
+      const balances = (accountInfo.data && accountInfo.data.balances) || [];
+      console.log(balances);
 
-      const frozenBalances = (accountInfo.frozen && accountInfo.frozen.balances) || [];
+      const frozenBalances = (accountInfo.data && accountInfo.data.frozen && accountInfo.data.frozen.balances) || [];
+      console.log(frozenBalances);
       const { amount = 0, expires } = frozenBalances[0] || {};
 
       const changed = [];
@@ -72,7 +72,7 @@ const showBalance = async (chatId) => {
         if (bal > 0) {
           currentTokens[name] = bal;
           allTokens.push(`- ${name}:  ${numberformat(bal)}`);
-          console.log(name === 'TRX' ? chalk.green(addr, name, bal) : chalk.white(addr, name, bal));
+          // console.log(name === 'TRX' ? chalk.green(addr, name, bal) : chalk.white(addr, name, bal));
         }
       });
 
@@ -101,6 +101,7 @@ const showBalance = async (chatId) => {
         bot.telegram.sendMessage(chatId, msg, { parse_mode: 'HTML' });
       }
     } catch (err) {
+      console.log(err);
       // ignore
       // console.error(err);
     }
