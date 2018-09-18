@@ -2,7 +2,6 @@ telegram:
   myChatId: 237293953
   
 tron:
-  api: https://api.tronscan.org
   trxTarget: TFmQQH14pMZhitALbKEZBDitKaMW3KX68B
 
 firebase:
