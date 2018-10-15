@@ -161,7 +161,7 @@ exports.startListenAccount = async (chatId, send = true) => {
   }
 
   jobs[chatId] = {
-    job: schedule.scheduleJob('*/10 * * * * *', async () => {
+    job: schedule.scheduleJob('*/10 * * * *', async () => {
       await showBalance(chatId);
     }),
   };
