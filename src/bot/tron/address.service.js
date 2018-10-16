@@ -98,7 +98,7 @@ const showBalance = async (chatId) => {
           msg += `- Expires: ${moment(expires).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss')} (+09:00)\n`;
         }
 
-        msg += '\n\n<b>This bot will check the balances of address every 10 minutes.</b>';
+        msg += '\n\n<b>This bot is checking the balances of address every 10 minutes.</b>';
 
         bot.telegram.sendMessage(chatId, msg, { parse_mode: 'HTML' });
       }
